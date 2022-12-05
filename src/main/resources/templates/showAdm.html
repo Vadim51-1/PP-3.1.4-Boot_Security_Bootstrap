@@ -2,13 +2,20 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Hello</title>
+  <title>Show</title>
 </head>
 <body>
-<h2 style="color:blue;">Hello World</h2>
+<p th:text="${person.getUsername() + ', ' + person.yearOfBirth}">VALUE</p>
+
 <form th:action="@{/logout}" th:method="POST">
   <input type="submit" value="Logout">
 </form>
-<a href="/logout">Logout</a>
+<form th:method="DELETE" th:action="@{{id}(id=${person.getId()})}">
+  <input type="submit" value="Delete"/>
+</form>
+
+
+
+
 </body>
 </html>
