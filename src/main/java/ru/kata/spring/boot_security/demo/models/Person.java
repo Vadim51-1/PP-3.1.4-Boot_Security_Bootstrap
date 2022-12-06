@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -35,19 +36,11 @@ public class Person implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
+
     private Set<Role> roles;
 
 
-//    @Column (name = "role")
-//    private String role;
-//
-//    public String getRole() {
-//        return role;
-//    }
-//
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
+
 
     // Конструктор по умолчанию нужен для Spring
     public Person() {
@@ -132,4 +125,6 @@ public class Person implements UserDetails {
                 ", password='" + password + '\'' +
                 '}';
     }
+
+
 }
