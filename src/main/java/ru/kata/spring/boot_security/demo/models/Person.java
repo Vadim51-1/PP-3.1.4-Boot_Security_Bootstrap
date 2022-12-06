@@ -16,7 +16,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "Person")
+@Table(name = "users")
 public class Person implements UserDetails {
     @Id
     @Column(name = "id")
@@ -35,7 +35,11 @@ public class Person implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany( fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name="us_id"),
+            inverseJoinColumns = @JoinColumn(name="roe_id"))
+
 
     private Set<Role> roles;
 
