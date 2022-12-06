@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.init;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import ru.kata.spring.boot_security.demo.models.Person;
@@ -15,14 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class CommandLineRunnerImpl implements CommandLineRunner {
+public class newPerson implements CommandLineRunner {
 
     private final PeopleRepository userRepository;
 
     private final RoleRepository roleRepository;
 
     @Autowired
-    public CommandLineRunnerImpl(PeopleRepository userRepository,RoleRepository roleRepository) {
+    public newPerson(PeopleRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository=roleRepository;
     }
@@ -56,20 +55,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         admin2.setRoles(roles2);
         userRepository.save(admin2);
 
-//            Person admin = new Person();
-//            admin.setUsername("Admin");
-//            admin.setPassword("100"); //100
-//        admin.setYearOfBirth(2010);
-//            admin.setRoles(new String[]{"ROLE_ADMIN"});
-//            userRepository.save(admin);
-//
-//        Person user = new Person();
-//        user.setUsername("User");
-//        user.setPassword("100"); //100
-//        user.setYearOfBirth(1999);
-//        user.setRoles(new String[]{"ROLE_USER"});
-//        userRepository.save(user);
-//
+
         }
 
     }
