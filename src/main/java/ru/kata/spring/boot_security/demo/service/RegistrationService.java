@@ -40,7 +40,7 @@ public class RegistrationService {
 
     public void register(Person person) {
 
-        Role role = new Role("ROLE_ADMIN");
+        Role role = new Role("ROLE_USER");
         roleRepository.save(role);
         person.setPassword((passwordEncoder.encode(person.getPassword())));
         Set<Role> roles = new HashSet<>();
@@ -73,7 +73,4 @@ public class RegistrationService {
 
 
 }
-
-
-
 

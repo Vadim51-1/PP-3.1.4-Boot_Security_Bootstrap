@@ -6,19 +6,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import ru.kata.spring.boot_security.demo.service.PersonDetailsService;
 
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final SuccessUserHandler successUserHandler;
-
+private final SuccessUserHandler successUserHandler;
     private final PersonDetailsService personDetailsService;
 
     @Autowired
@@ -35,9 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/login", "/auth/registration", "/error").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
-                .formLogin().loginPage("/auth/login").successHandler(successUserHandler)
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/admin", true)
+                .formLogin().loginPage("/auth/login")
+                .loginProcessingUrl("/process_login").successHandler(successUserHandler)
+
                 .failureUrl("/auth/login?error")
                 .and().logout().logoutUrl("/logout")
                 .logoutSuccessUrl("/auth/login");
