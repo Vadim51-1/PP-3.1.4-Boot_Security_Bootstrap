@@ -2,10 +2,9 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.Person;
+import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
 import ru.kata.spring.boot_security.demo.util.PersonValidator;
 
@@ -31,17 +30,17 @@ public class AuthController {
     }
 
     @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") Person person) {
+    public String registrationPage(@ModelAttribute("person") User user) {
         return "auth/registration";
     }
 
     @PostMapping("/registration")
-    public String performRegistration(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult) {
-        personValidator.validate(person, bindingResult);
+    public String performRegistration(@ModelAttribute("person") @Valid User user, BindingResult bindingResult) {
+        personValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors())
             return "/auth/registration";
-        registrationService.register(person);
+        registrationService.register(user);
         return "redirect:/auth/login";
     }
 

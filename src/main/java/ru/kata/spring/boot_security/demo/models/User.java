@@ -11,14 +11,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "users")
-public class Person implements UserDetails {
+public class User implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,26 +34,24 @@ public class Person implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany( fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name="us_id"),
-            inverseJoinColumns = @JoinColumn(name="roe_id"))
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
 
 
     private Set<Role> roles;
 
 
-
-
-    // Конструктор по умолчанию нужен для Spring
-    public Person() {
+    public User() {
     }
 
-    public Person(String username, int yearOfBirth) {
+    public User(int id, String username, int yearOfBirth, String password, Set<Role> roles) {
+        this.id = id;
         this.username = username;
         this.yearOfBirth = yearOfBirth;
-
-
+        this.password = password;
+        this.roles = roles;
     }
 
     public int getId() {
@@ -112,7 +108,7 @@ public class Person implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return (Collection<? extends GrantedAuthority>) getRoles();
+        return roles;
     }
 
     public String getPassword() {
@@ -125,7 +121,7 @@ public class Person implements UserDetails {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", yearOfBirth=" + yearOfBirth +

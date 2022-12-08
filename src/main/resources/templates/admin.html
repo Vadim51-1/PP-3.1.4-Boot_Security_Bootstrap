@@ -10,7 +10,9 @@
   <a th:href="@{/admin/{id}(id=${person.getId()})}"
      th:text="${person.getUsername()}">user</a>
 
-  <a th:href="@{{id}/edit(id=${person.getId()})}">Edit</a>
+
+
+  <a th:href="@{/admin/{id}/edit(id=${person.getId()})}">Edit</a>
 
 </div>
 
@@ -19,5 +21,9 @@
   <input type="submit" value="Logout">
 </form>
 
+
 <br/>
+<form th:action="@{/admin/users/new}" th:method="GET">
+  <input type="submit" value="Create new user!"/>
+</form>
 <hr/>

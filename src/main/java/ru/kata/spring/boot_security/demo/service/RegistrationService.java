@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.models.Person;
+import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-
+@Transactional(readOnly = true)
 @Service
 public class RegistrationService {
 
@@ -33,25 +33,24 @@ public class RegistrationService {
 
     }
 
-    public void register(Person person) {
+    public void register(User user) {
 
         Role role = new Role("ROLE_USER");
         roleRepository.save(role);
-        person.setPassword((passwordEncoder.encode(person.getPassword())));
+        user.setPassword((passwordEncoder.encode(user.getPassword())));
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        person.setRoles(roles);
-
-        peopleRepository.save(person);
+        user.setRoles(roles);
+        peopleRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public List<Person> getAllUsers() {
+
+    public List<User> getAllUsers() {
         return peopleRepository.findAll();
     }
 
-    public Person findUserById(Integer userId) {
-        Optional<Person> userFromDb = peopleRepository.findById(userId);
+    public User findUserById(Integer userId) {
+        Optional<User> userFromDb = peopleRepository.findById(userId);
         return userFromDb.orElse(null);
     }
 
@@ -61,14 +60,12 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void update(int id, Person updatedPerson) {
-        updatedPerson.setId(id);
-        peopleRepository.save(updatedPerson);
+    public void update(int id, User updatedUser) {
+        updatedUser.setId(id);
+        peopleRepository.save(updatedUser);
     }
 
-//    public Optional<Person> findByUsername(String username) {
-//        return peopleRepository.findByUsername(username);
-//    }
+
 
 
 }

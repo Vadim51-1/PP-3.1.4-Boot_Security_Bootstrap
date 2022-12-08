@@ -1,11 +1,12 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.Person;
+import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.service.PersonDetailsService;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
 
 import javax.validation.Valid;
@@ -15,13 +16,19 @@ import javax.validation.Valid;
 @RequestMapping("/admin")
 public class AdminControllers {
 
+    private  final PersonDetailsService personDetailsService;
+
+    private final PasswordEncoder passwordEncoder;
+
 
     private final RegistrationService registrationService;
 
 
     @Autowired
-    public AdminControllers(RegistrationService registrationService) {
+    public AdminControllers(RegistrationService registrationService,PersonDetailsService personDetailsService,PasswordEncoder passwordEncoder) {
         this.registrationService = registrationService;
+        this.personDetailsService=personDetailsService;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @GetMapping
@@ -42,20 +49,32 @@ public class AdminControllers {
         return "redirect:/admin";
     }
 
+
+
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", registrationService.findUserById(id));
-        return "/edit";
+    public String getViewForUpdateUser(Model model, @PathVariable("id") Integer id) {
+        model.addAttribute("user", personDetailsService.showUser(id));
+        return "edit";
+    }
+
+    @RequestMapping(value = "update/{id}", method = RequestMethod.POST)
+   public   String update(@ModelAttribute("user") @Valid User user,
+                         @PathVariable("id") int id) {
+        registrationService.update(id, user);
+        return "redirect:/admin";
     }
 
 
-    @PatchMapping("/{id}")
-    public String update(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult,
-                         @PathVariable("id") int id) {
-        if (bindingResult.hasErrors())
-            return "/edit";
+    @GetMapping("/users/new")
+    public String getViewForNewUser(Model model) {
+        model.addAttribute("user", new User());
+        return "/new";
+    }
 
-        registrationService.update(id, person);
+    @PostMapping("/users/newUsers")
+    public String addUser(@ModelAttribute("user") User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        personDetailsService.createUser(user);
         return "redirect:/admin";
     }
 
