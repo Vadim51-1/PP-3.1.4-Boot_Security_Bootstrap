@@ -28,13 +28,29 @@ public class PersonDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Optional<Person> person = peopleRepository.findByUsername(s);
+//        Optional<Person> person = peopleRepository.findByUsername(s);
+//
+//        if (person.isEmpty()) {
+//            throw new UsernameNotFoundException("User not found");
+//        }
+//
+//        return person.get();
 
-        if (person.isEmpty()) {
+        Person person = peopleRepository.findByUsername(s);
+
+        if (person==null) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        return person.get();
+        return person;
+    }
+
+    public Person findByUsername(String username) {
+        return peopleRepository.findByUsername(username);
+    }
+
+    public Person showUser(Integer id) {
+        return peopleRepository.findById(id).get();
     }
 
 

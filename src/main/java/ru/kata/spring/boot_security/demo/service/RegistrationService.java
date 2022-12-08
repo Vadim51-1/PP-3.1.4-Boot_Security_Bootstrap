@@ -1,19 +1,14 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.kata.spring.boot_security.demo.models.Person;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.PeopleRepository;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
-import javax.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -71,6 +66,9 @@ public class RegistrationService {
         peopleRepository.save(updatedPerson);
     }
 
+//    public Optional<Person> findByUsername(String username) {
+//        return peopleRepository.findByUsername(username);
+//    }
+
 
 }
-
