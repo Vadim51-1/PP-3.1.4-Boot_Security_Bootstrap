@@ -11,10 +11,9 @@ import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
-@Transactional(readOnly = true)
+
+
 @Service
 public class RegistrationService {
 
@@ -32,13 +31,13 @@ public class RegistrationService {
         this.roleRepository = roleRepository;
 
     }
-
+@Transactional
     public void register(User user) {
 
         Role role = new Role("ROLE_USER");
         roleRepository.save(role);
         user.setPassword((passwordEncoder.encode(user.getPassword())));
-        Set<Role> roles = new HashSet<>();
+        var roles = new HashSet<Role>();
         roles.add(role);
         user.setRoles(roles);
         peopleRepository.save(user);
@@ -50,20 +49,25 @@ public class RegistrationService {
     }
 
     public User findUserById(Integer userId) {
-        Optional<User> userFromDb = peopleRepository.findById(userId);
+        var userFromDb = peopleRepository.findById(userId);
         return userFromDb.orElse(null);
     }
 
-    @Transactional
+
     public void delete(int id) {
         peopleRepository.deleteById(id);
     }
 
     @Transactional
     public void update(int id, User updatedUser) {
-        updatedUser.setId(id);
-        peopleRepository.save(updatedUser);
+        var byId = peopleRepository.findById(id);
+        byId.ifPresent(x->{
+            x.setUsername(updatedUser.getUsername());
+            x.setYearOfBirth(updatedUser.getYearOfBirth());
+        });
     }
+
+
 
 
 

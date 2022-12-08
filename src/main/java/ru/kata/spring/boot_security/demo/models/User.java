@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,14 +36,18 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "users_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+        @ManyToMany( fetch = FetchType.EAGER)
+        private Set<Role> roles;
 
 
     public User() {
+    }
+
+    public User(String username, int yearOfBirth, String password, Set<Role> roles) {
+        this.username = username;
+        this.yearOfBirth = yearOfBirth;
+        this.password = password;
+        this.roles = roles;
     }
 
     public User(int id, String username, int yearOfBirth, String password, Set<Role> roles) {
@@ -127,21 +132,4 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 '}';
     }
-
-    public void setRoles(String[] roles) {
-        Set<Role> roleSet = new HashSet<>();
-        for (String role : roles) {
-            if (role != null) {
-                if (role.equals("ROLE_ADMIN")) {
-                    roleSet.add(new Role(1L, role));
-                }
-                if (role.equals("ROLE_USER")) {
-                    roleSet.add(new Role(2L, role));
-                }
-            }
-        }
-        this.roles = roleSet;
-    }
-
-
 }

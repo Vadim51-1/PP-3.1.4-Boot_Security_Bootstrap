@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.service.PersonDetailsService;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 
 
 @Controller
@@ -19,6 +20,7 @@ public class AdminControllers {
     private  final PersonDetailsService personDetailsService;
 
     private final PasswordEncoder passwordEncoder;
+
 
 
     private final RegistrationService registrationService;
@@ -57,7 +59,7 @@ public class AdminControllers {
         return "edit";
     }
 
-    @RequestMapping(value = "update/{id}", method = RequestMethod.POST)
+    @PostMapping(value = "update/{id}")
    public   String update(@ModelAttribute("user") @Valid User user,
                          @PathVariable("id") int id) {
         registrationService.update(id, user);
@@ -72,9 +74,10 @@ public class AdminControllers {
     }
 
     @PostMapping("/users/newUsers")
-    public String addUser(@ModelAttribute("user") User user) {
+    public String addUser(@ModelAttribute("user") User user,@RequestParam(value ="my_roles[]") String[] roles) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        personDetailsService.createUser(user);
+        personDetailsService.createUser(user,roles);
+
         return "redirect:/admin";
     }
 
