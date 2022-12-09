@@ -3,8 +3,6 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-
+@Transactional(readOnly = true)
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -34,18 +32,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-
         User user = userRepository.findByUsername(s);
-
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-
+        user.getRoles().forEach(x -> x.getRole());
         return user;
     }
-@Transactional
+
     @Override
     public User findByUsername(String username) {
         userRepository.findByUsername(username);
@@ -65,12 +60,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
+    @Transactional
     @Override
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);

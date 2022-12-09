@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +33,7 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
@@ -141,6 +141,7 @@ public class User implements UserDetails {
                 ", username='" + username + '\'' +
                 ", yearOfBirth=" + yearOfBirth +
                 ", password='" + password + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Transactional(readOnly = true)
 @Service
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
-
 
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;

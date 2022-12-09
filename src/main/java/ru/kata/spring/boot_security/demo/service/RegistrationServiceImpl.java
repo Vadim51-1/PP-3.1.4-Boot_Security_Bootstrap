@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +12,7 @@ import ru.kata.spring.boot_security.demo.repositorу.RoleRepository;
 
 import java.util.HashSet;
 
-
+@Transactional(readOnly = true)
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
 
@@ -39,6 +38,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findUserById(Integer userId) {
 
@@ -48,6 +48,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         } else throw new UsernameNotFoundException("User not found!");
     }
 
+    @Transactional
     @Override
     public HashSet<Role> getNewRol(){
         var roles = new HashSet<Role>();
