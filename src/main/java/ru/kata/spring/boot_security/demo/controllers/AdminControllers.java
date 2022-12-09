@@ -6,80 +6,72 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.service.PersonDetailsService;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
+import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.RegistrationServiceImpl;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 
 
 @Controller
 @RequestMapping("/admin")
 public class AdminControllers {
 
-    private  final PersonDetailsService personDetailsService;
-
     private final PasswordEncoder passwordEncoder;
-
-
 
     private final RegistrationService registrationService;
 
+    private final UserService userService;
 
     @Autowired
-    public AdminControllers(RegistrationService registrationService,PersonDetailsService personDetailsService,PasswordEncoder passwordEncoder) {
+    public AdminControllers(RegistrationService registrationService, PasswordEncoder passwordEncoder, UserService userService) {
         this.registrationService = registrationService;
-        this.personDetailsService=personDetailsService;
-        this.passwordEncoder=passwordEncoder;
+
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @GetMapping
     public String getFormPrintAllUsers(Model model) {
-        model.addAttribute("people", registrationService.getAllUsers());
-        return "admin";
+        model.addAttribute("people", userService.getAllUsers());
+        return "adminViews/admin";
     }
 
     @GetMapping("/{id}")
-    public String showUserData(@PathVariable("id") int id, Model model) {
+    public String getFormWithUserData(@PathVariable("id") int id, Model model) {
         model.addAttribute("person", registrationService.findUserById(id));
-        return "showAdm";
+        return "adminViews/showAdm";
     }
 
     @PostMapping("/{id}")
-    public String delete(@PathVariable("id") int id) {
-        registrationService.delete(id);
+    public String deleteUser(@PathVariable("id") int id) {
+        userService.deleteUser(id);
         return "redirect:/admin";
     }
 
-
-
     @GetMapping("/{id}/edit")
-    public String getViewForUpdateUser(Model model, @PathVariable("id") Integer id) {
-        model.addAttribute("user", personDetailsService.showUser(id));
-        return "edit";
+    public String getFormForUpdateUser(Model model, @PathVariable("id") Integer id) {
+        model.addAttribute("user", userService.showUser(id));
+        return "adminViews/edit";
     }
 
     @PostMapping(value = "update/{id}")
-   public   String update(@ModelAttribute("user") @Valid User user,
-                         @PathVariable("id") int id) {
-        registrationService.update(id, user);
+    public String updateUser(@ModelAttribute("user") @Valid User user,
+                             @PathVariable("id") int id) {
+        userService.updateUser(id, user);
         return "redirect:/admin";
     }
 
-
     @GetMapping("/users/new")
-    public String getViewForNewUser(Model model) {
+    public String getFormForNewUser(Model model) {
         model.addAttribute("user", new User());
-        return "/new";
+        return "adminViews/new";
     }
 
     @PostMapping("/users/newUsers")
-    public String addUser(@ModelAttribute("user") User user,@RequestParam(value ="my_roles[]") String[] roles) {
+    public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "my_roles[]") String[] roles) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        personDetailsService.createUser(user,roles);
-
+        userService.createUser(user, roles);
         return "redirect:/admin";
     }
-
-
 }

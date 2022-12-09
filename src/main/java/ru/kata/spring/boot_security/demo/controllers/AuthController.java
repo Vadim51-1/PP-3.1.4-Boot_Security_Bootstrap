@@ -14,8 +14,10 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private final RegistrationService registrationService;
+
     private final PersonValidator personValidator;
+
+    private final RegistrationService registrationService;
 
     @Autowired
     public AuthController(PersonValidator personValidator, RegistrationService registrationService) {
@@ -23,26 +25,22 @@ public class AuthController {
         this.registrationService = registrationService;
     }
 
-
     @GetMapping("/login")
-    public String loginPage() {
+    public String getFormLoginPage() {
         return "auth/login";
     }
 
     @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") User user) {
+    public String getFormRegistrationPage(@ModelAttribute("person") User user) {
         return "auth/registration";
     }
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid User user, BindingResult bindingResult) {
         personValidator.validate(user, bindingResult);
-
         if (bindingResult.hasErrors())
             return "/auth/registration";
         registrationService.register(user);
         return "redirect:/auth/login";
     }
-
-
 }

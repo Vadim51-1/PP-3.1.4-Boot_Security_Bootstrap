@@ -1,18 +1,15 @@
 package ru.kata.spring.boot_security.demo.models;
 
-
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-
 import javax.validation.constraints.Size;
-import java.util.Collection;
 
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -36,9 +33,8 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-        @ManyToMany( fetch = FetchType.EAGER)
-        private Set<Role> roles;
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
 
     public User() {
     }
@@ -56,6 +52,11 @@ public class User implements UserDetails {
         this.yearOfBirth = yearOfBirth;
         this.password = password;
         this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
     }
 
     public int getId() {
@@ -110,17 +111,25 @@ public class User implements UserDetails {
         this.yearOfBirth = yearOfBirth;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return yearOfBirth == user.yearOfBirth && Objects.equals(username, user.username) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, yearOfBirth, password);
     }
 
     @Override
