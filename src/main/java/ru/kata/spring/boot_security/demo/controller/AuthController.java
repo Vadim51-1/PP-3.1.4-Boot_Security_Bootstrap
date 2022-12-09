@@ -2,11 +2,12 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RegistrationService;
+
+
+import ru.kata.spring.boot_security.demo.service.RegistrationServiceImpl;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
@@ -15,33 +16,35 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-
-    private final UserValidator personValidator;
-
-    private final RegistrationService registrationService;
+    private final RegistrationServiceImpl registrationServiceImpl;
+    private final UserValidator userValidator;
 
     @Autowired
-    public AuthController(UserValidator personValidator, RegistrationService registrationService) {
-        this.personValidator = personValidator;
-        this.registrationService = registrationService;
+    public AuthController(UserValidator userValidator, RegistrationServiceImpl registrationServiceImpl) {
+        this.userValidator = userValidator;
+        this.registrationServiceImpl = registrationServiceImpl;
     }
 
+
     @GetMapping("/login")
-    public String getFormLoginPage() {
+    public String loginPage() {
         return "auth/login";
     }
 
     @GetMapping("/registration")
-    public String getFormRegistrationPage(@ModelAttribute("person") User user) {
+    public String registrationPage(@ModelAttribute("person") User user) {
         return "auth/registration";
     }
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid User user, BindingResult bindingResult) {
-        personValidator.validate(user, bindingResult);
+        userValidator.validate(user, bindingResult);
+
         if (bindingResult.hasErrors())
             return "/auth/registration";
-        registrationService.register(user);
+        registrationServiceImpl.register(user);
         return "redirect:/auth/login";
     }
+
+
 }

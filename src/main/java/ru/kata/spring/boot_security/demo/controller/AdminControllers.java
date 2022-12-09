@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminControllers {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -24,7 +24,7 @@ public class AdminController {
     private final UserService userService;
 
     @Autowired
-    public AdminController(RegistrationService registrationService, PasswordEncoder passwordEncoder, UserService userService) {
+    public AdminControllers(RegistrationService registrationService, PasswordEncoder passwordEncoder, UserService userService) {
         this.registrationService = registrationService;
 
         this.passwordEncoder = passwordEncoder;

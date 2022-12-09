@@ -11,6 +11,6 @@ public interface RegistrationService {
 
     User findUserById(Integer userId);
 
-     HashSet<Role> getNewRol();
+    HashSet<Role> getNewRol();
 
 }
