@@ -1,13 +1,15 @@
 package ru.kata.spring.boot_security.demo.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.models.Role;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.repositorу.UserRepository;
+import ru.kata.spring.boot_security.demo.repositorу.RoleRepository;
 
 import java.util.HashSet;
 
@@ -29,20 +31,27 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     }
 
+    @Override
     @Transactional
     public void register(User user) {
-
-        var role = new Role("ROLE_USER");
-        roleRepository.save(role);
         user.setPassword((passwordEncoder.encode(user.getPassword())));
-        var roles = new HashSet<Role>();
-        roles.add(role);
-        user.setRoles(roles);
+        user.setRoles(getNewRol());
         userRepository.save(user);
     }
 
+    @Override
     public User findUserById(Integer userId) {
+
         var userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(null);
+        if (userFromDb.isPresent()) {
+            return  userFromDb.get();
+        } else throw new UsernameNotFoundException("User not found!");
+    }
+
+    @Override
+    public HashSet<Role> getNewRol(){
+        var roles = new HashSet<Role>();
+        roles.add(roleRepository.save(new Role("ROLE_USER")));
+        return roles;
     }
 }

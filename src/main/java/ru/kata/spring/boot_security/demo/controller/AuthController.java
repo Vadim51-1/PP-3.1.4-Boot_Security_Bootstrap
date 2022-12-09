@@ -1,12 +1,13 @@
-package ru.kata.spring.boot_security.demo.controllers;
+package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
-import ru.kata.spring.boot_security.demo.util.PersonValidator;
+import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
 
@@ -15,12 +16,12 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final PersonValidator personValidator;
+    private final UserValidator personValidator;
 
     private final RegistrationService registrationService;
 
     @Autowired
-    public AuthController(PersonValidator personValidator, RegistrationService registrationService) {
+    public AuthController(UserValidator personValidator, RegistrationService registrationService) {
         this.personValidator = personValidator;
         this.registrationService = registrationService;
     }

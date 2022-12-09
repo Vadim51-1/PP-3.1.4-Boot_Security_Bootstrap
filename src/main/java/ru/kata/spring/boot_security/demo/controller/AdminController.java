@@ -1,21 +1,21 @@
-package ru.kata.spring.boot_security.demo.controllers;
+package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.service.RegistrationServiceImpl;
 
 import javax.validation.Valid;
 
 
 @Controller
 @RequestMapping("/admin")
-public class AdminControllers {
+public class AdminController {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -24,7 +24,7 @@ public class AdminControllers {
     private final UserService userService;
 
     @Autowired
-    public AdminControllers(RegistrationService registrationService, PasswordEncoder passwordEncoder, UserService userService) {
+    public AdminController(RegistrationService registrationService, PasswordEncoder passwordEncoder, UserService userService) {
         this.registrationService = registrationService;
 
         this.passwordEncoder = passwordEncoder;
@@ -44,7 +44,7 @@ public class AdminControllers {
     }
 
     @PostMapping("/{id}")
-    public String deleteUser(@PathVariable("id") int id) {
+    public String deleteUserInDataBase(@PathVariable("id") int id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
@@ -56,8 +56,8 @@ public class AdminControllers {
     }
 
     @PostMapping(value = "update/{id}")
-    public String updateUser(@ModelAttribute("user") @Valid User user,
-                             @PathVariable("id") int id) {
+    public String updateUserInDataBase(@ModelAttribute("user") @Valid User user,
+                                       @PathVariable("id") int id) {
         userService.updateUser(id, user);
         return "redirect:/admin";
     }
@@ -69,7 +69,7 @@ public class AdminControllers {
     }
 
     @PostMapping("/users/newUsers")
-    public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "my_roles[]") String[] roles) {
+    public String addUserDataBase(@ModelAttribute("user") User user, @RequestParam(value = "my_roles[]") String[] roles) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.createUser(user, roles);
         return "redirect:/admin";
