@@ -13,10 +13,18 @@
   <input type="text" th:field="*{username}"id="username">
   <div style="color: red" th:if="${#fields.hasErrors('username')}"th:errors="*{username}">Username errors</div>
   <br/>
-  <label for="yearOfBirth">Введите год рождения</label>
-  <input type="text" th:field="*{age}" id="yearOfBirth">
+  <label for="age">Введите год рождения</label>
+  <input type="text" th:field="*{age}" id="age">
 
+  <br/>
+  <label for="firstName">Введите имя</label>
+  <input type="text" th:field="*{firstName}" id="firstName">
+
+  <br/>
+  <label for="lastName">Введите фамилию</label>
+  <input type="text" th:field="*{lastName}" id="lastName">
   <br>
+
   <label for="password">Введите пароль</label>
   <input  type="password" th:field="*{password}" id="password">
   <div style="color: red" th:if="${#fields.hasErrors('password')}"th:errors="*{password}">Password errors</div>

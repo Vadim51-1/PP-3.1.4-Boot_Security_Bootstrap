@@ -6,8 +6,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 
+import ru.kata.spring.boot_security.demo.service.RegistrationService;
 
-import ru.kata.spring.boot_security.demo.service.RegistrationServiceImpl;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
@@ -16,35 +16,34 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private final RegistrationServiceImpl registrationServiceImpl;
+
     private final UserValidator userValidator;
 
+    private final RegistrationService registrationService;
+
     @Autowired
-    public AuthController(UserValidator userValidator, RegistrationServiceImpl registrationServiceImpl) {
+    public AuthController(UserValidator userValidator, RegistrationService registrationService) {
         this.userValidator = userValidator;
-        this.registrationServiceImpl = registrationServiceImpl;
+
+        this.registrationService = registrationService;
     }
 
-
     @GetMapping("/login")
-    public String loginPage() {
+    public String getFormLoginPage() {
         return "auth/login";
     }
 
     @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") User user) {
+    public String getFormRegistrationPage(@ModelAttribute("person") User user) {
         return "auth/registration";
     }
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
-
         if (bindingResult.hasErrors())
             return "/auth/registration";
-        registrationServiceImpl.register(user);
+        registrationService.register(user);
         return "redirect:/auth/login";
     }
-
-
 }

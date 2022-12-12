@@ -1,17 +1,17 @@
 package ru.kata.spring.boot_security.demo.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
-
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repositorу.UserRepository;
+
 import ru.kata.spring.boot_security.demo.repositorу.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositorу.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
-  //  @Transactional
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
@@ -41,45 +41,41 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("User not found");
         }
         user.getRoles().forEach(x -> x.getRole());
-
         return user;
     }
-
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
+    @Override
     public User showUser(Integer id) {
         return userRepository.findById(id).get();
     }
-
+    @Override
     @Transactional
     public void createUser(User user, String[] rol) {
         Set<Role> byRoleIn = roleRepository.findByRoleIn(Arrays.asList(rol));
         user.setRoles(byRoleIn);
         userRepository.save(user);
     }
-
-
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    @Override
     @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
-
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-
+    @Override
     @Transactional
     public void updateUser(Integer id, User updatedUser) {
         var byId = userRepository.findById(id);
         byId.ifPresent(x -> {
             x.setUsername(updatedUser.getUsername());
             x.setAge(updatedUser.getAge());
+            x.setFirstName(updatedUser.getFirstName());
+            x.setLastName(updatedUser.getLastName());
         });
     }
-
-
 }

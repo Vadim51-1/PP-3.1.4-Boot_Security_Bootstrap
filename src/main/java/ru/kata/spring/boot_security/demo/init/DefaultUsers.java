@@ -8,18 +8,20 @@ import org.springframework.stereotype.Component;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import ru.kata.spring.boot_security.demo.repositorу.UserRepository;
 import ru.kata.spring.boot_security.demo.repositorу.RoleRepository;
-
+import ru.kata.spring.boot_security.demo.repositorу.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.Set;
+
 
 @Component
 public class DefaultUsers {
 
     private final UserRepository userRepository;
+
     private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     public DefaultUsers(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
@@ -29,21 +31,16 @@ public class DefaultUsers {
     }
 
     @PostConstruct
-    public void init() {
-
+    public void creationOfDefaultUsers() {
         var role = new Role("ROLE_ADMIN");
         var role2 = new Role("ROLE_USER");
         roleRepository.saveAll(Set.of(role, role2));
-        createUser("Admin", 2010, passwordEncoder.encode("200"), Set.of(role));
-        createUser("User", 2012 ,passwordEncoder.encode("100"), Set.of(role2));
-
-
-
+        createUser("Admin",  passwordEncoder.encode("100"),"Admin","Admin",21, Set.of(role));
+        createUser("User",  passwordEncoder.encode("200"),"User","User",54, Set.of(role2));
     }
 
-    private void createUser(String name, int age, String password, Set<Role> role) {
-        User user = new User(name, age, password, role);
+    private void createUser(String username, String password, String firstName, String lastName, int age, Set<Role> role) {
+        User user = new User(username, password, firstName, lastName,age,role);
         userRepository.save(user);
     }
-
 }
