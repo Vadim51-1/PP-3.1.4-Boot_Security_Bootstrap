@@ -1,8 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,9 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -148,6 +144,20 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+
+
+    public String returnTheSetOfRolesToString(Set<Role> roles) {
+        StringBuilder sb = new StringBuilder();
+        for (Role role : roles) {
+            if (role.getRole().contains("ROLE_ADMIN")) {
+                sb.append("ADMIN ");
+            } else if (role.getRole().contains("ROLE_USER")) {
+                sb.append("USER ");
+            }
+        }
+        return sb.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -166,8 +176,12 @@ public class User implements UserDetails {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", yearOfBirth=" + age +
+                ", age=" + age +
                 ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }
+

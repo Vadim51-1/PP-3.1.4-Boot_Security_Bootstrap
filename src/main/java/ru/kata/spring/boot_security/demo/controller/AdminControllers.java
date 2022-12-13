@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -7,11 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import ru.kata.spring.boot_security.demo.service.RegistrationService;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.service.RegistrationServiceImpl;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 
 @Controller
@@ -20,28 +21,27 @@ public class AdminControllers {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final RegistrationService registrationService;
-
     private final UserService userService;
 
+    private final RoleService roleService;
+
+
     @Autowired
-    public AdminControllers(RegistrationService registrationService, PasswordEncoder passwordEncoder, UserService userService) {
-        this.registrationService = registrationService;
+    public AdminControllers(PasswordEncoder passwordEncoder, UserService userService, RoleService roleService) {
 
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
-    @GetMapping
-    public String getFormPrintAllUsers(Model model) {
-        model.addAttribute("people", userService.getAllUsers());
-        return "adminViews/admin";
-    }
-
-    @GetMapping("/{id}")
-    public String getFormWithUserData(@PathVariable("id") int id, Model model) {
-        model.addAttribute("person", registrationService.findUserById(id));
-        return "adminViews/showAdm";
+    @GetMapping()
+    public String getAdminPageView(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("admin", userService.showUser(user.getId()));
+        model.addAttribute("listOfUsers", userService.getAllUsers());
+        model.addAttribute("personalRole", user.returnTheSetOfRolesToString(userService.showUser(user.getId()).getRoles()));
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "adminViews/adminPage";
     }
 
     @PostMapping("/{id}")
@@ -50,29 +50,35 @@ public class AdminControllers {
         return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
-    public String getFormForUpdateUser(Model model, @PathVariable("id") Integer id) {
-        model.addAttribute("user", userService.showUser(id));
-        return "adminViews/edit";
-    }
-
     @PostMapping(value = "update/{id}")
     public String updateUser(@ModelAttribute("user") @Valid User user,
-                             @PathVariable("id") int id) {
-        userService.updateUser(id, user);
+                             @PathVariable("id") int id, @RequestParam(value = "my_roles[]") String[] roles) {
+        userService.updateUser(id, user, roles);
         return "redirect:/admin";
     }
 
-    @GetMapping("/users/new")
-    public String getFormForNewUser(Model model) {
+    @GetMapping("/new")
+    public String getViewForNewUser(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("admin", userService.showUser(user.getId()));
         model.addAttribute("user", new User());
-        return "adminViews/new";
+        model.addAttribute("personalRole", user.returnTheSetOfRolesToString(userService.showUser(user.getId()).getRoles()));
+        model.addAttribute("roles", roleService.getAllRoles());
+        return "adminViews/newUser";
     }
 
-    @PostMapping("/users/newUsers")
+    @PostMapping("/newUser")
     public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "my_roles[]") String[] roles) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.createUser(user, roles);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/personalPage")
+    public String getViewsPersonalPageAdmin(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("admin", userService.showUser(user.getId()));
+        model.addAttribute("role", user.returnTheSetOfRolesToString(userService.showUser(user.getId()).getRoles()));
+        return "adminViews/adminPersonalPage";
     }
 }

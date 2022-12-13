@@ -10,10 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 
-
-
-
-
+@Service
 @Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
 
@@ -31,5 +28,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Set<Role> findByRoleIn(List<String> role) {
         return roleRepository.findByRoleIn(role);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
     }
 }

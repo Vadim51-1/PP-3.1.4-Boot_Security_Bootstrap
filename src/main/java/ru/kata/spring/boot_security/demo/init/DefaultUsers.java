@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.init;
 
 
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -35,12 +34,12 @@ public class DefaultUsers {
         var role = new Role("ROLE_ADMIN");
         var role2 = new Role("ROLE_USER");
         roleRepository.saveAll(Set.of(role, role2));
-        createUser("Admin",  passwordEncoder.encode("100"),"Admin","Admin",21, Set.of(role));
-        createUser("User",  passwordEncoder.encode("200"),"User","User",54, Set.of(role2));
+        createUser("Admin@yandex.ru", passwordEncoder.encode("hochyEst"), "Admin", "Admin", 21, Set.of(role, role2));
+        createUser("User@yandex.ru", passwordEncoder.encode("hochySpat"), "User", "User", 54, Set.of(role2));
     }
 
     private void createUser(String username, String password, String firstName, String lastName, int age, Set<Role> role) {
-        User user = new User(username, password, firstName, lastName,age,role);
+        User user = new User(username, password, firstName, lastName, age, role);
         userRepository.save(user);
     }
 }

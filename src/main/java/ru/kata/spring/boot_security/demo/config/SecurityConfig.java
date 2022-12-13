@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.config;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,6 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
 
     private final UserServiceImpl userServiceImpl;
+
 
     @Autowired
     public SecurityConfig(UserServiceImpl userServiceImpl, SuccessUserHandler successUserHandler) {
