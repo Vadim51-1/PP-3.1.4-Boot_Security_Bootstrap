@@ -19,20 +19,18 @@ import java.security.Principal;
 @RequestMapping("/admin")
 public class AdminControllers {
 
-    private final PasswordEncoder passwordEncoder;
-
     private final UserService userService;
 
     private final RoleService roleService;
 
-
     @Autowired
-    public AdminControllers(PasswordEncoder passwordEncoder, UserService userService, RoleService roleService) {
+    public AdminControllers(UserService userService, RoleService roleService) {
 
-        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+
         this.roleService = roleService;
     }
+
 
     @GetMapping()
     public String getAdminPageView(Principal principal, Model model) {
@@ -69,7 +67,6 @@ public class AdminControllers {
 
     @PostMapping("/newUser")
     public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "my_roles[]") String[] roles) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.createUser(user, roles);
         return "redirect:/admin";
     }

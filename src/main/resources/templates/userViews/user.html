@@ -15,7 +15,7 @@
             <ul class="list-inline">
                 <li class="list-inline-item"><h4 th:text="${user.getUsername()}"></h4></li>
                 <li class="list-inline-item"><h4 class="lead"
-                                                 th:text="' with roles: ' + ${user.convertSetOfRoleToString(user.getRoles())}"></h4>
+                                                 th:text="' with roles: ' + ${user.returnTheSetOfRolesToString(user.getRoles())}"></h4>
                 </li>
             </ul>
         </div>

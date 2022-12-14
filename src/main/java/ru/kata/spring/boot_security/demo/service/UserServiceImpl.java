@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +28,15 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepository roleRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
 
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -72,6 +76,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void createUser(User user, String[] rol) {
         Set<Role> byRoleIn = roleRepository.findByRoleIn(Arrays.asList(rol));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(byRoleIn);
         userRepository.save(user);
     }
